@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>Anusha's Sunflower Meadow | Cat & Elephant Adventure</title>
+  <meta name="description" content="A magical blue-themed mini adventure game made for Anusha featuring cute kittens, friendly elephants, and golden blooming sunflowers.">
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;600;700;800;900&family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="game-container">
+    <!-- Starry Backdrop Layer -->
+    <div class="star-layer"></div>
+
+    <!-- Main Game Canvas -->
+    <canvas id="gameCanvas"></canvas>
+
+    <!-- Top HUD Overlay -->
+    <header id="hud-overlay">
+      <div class="hud-group">
+        <div class="glass-pill" id="seed-pill" title="Golden Sunflower Seeds Collected">
+          <span class="pill-icon">🌻</span>
+          <span id="seed-count">0</span>
+        </div>
+        <div class="glass-pill" id="sunshine-pill" title="Sunshine Stars Collected">
+          <span class="pill-icon">✨</span>
+          <span id="sunshine-count">0</span>
+        </div>
+        <div class="glass-pill" id="bloom-pill" title="Garden Bloom Progress">
+          <span class="pill-icon">🌱</span>
+          <div class="progress-bar-container">
+            <div class="progress-bar-fill" id="bloom-progress-bar"></div>
+          </div>
+          <span id="bloom-percent">0%</span>
+        </div>
+      </div>
+
+      <div class="hud-group">
+        <button class="icon-btn" id="btn-water" title="Ask Ellie to Water Meadow! (Key: E or Water)">🐘</button>
+        <button class="icon-btn" id="btn-garden" title="View Anusha's Sunflower Sanctuary">📖</button>
+        <button class="icon-btn" id="btn-audio" title="Toggle Music & Sound Effects">🔊</button>
+        <button class="icon-btn" id="btn-help" title="How to Play">❓</button>
+      </div>
+    </header>
+
+    <!-- Floating Keyboard Controls Guide -->
+    <div id="guide-prompt">
+      <span>Move: <span class="key-badge">A / D</span> or <span class="key-badge">◀ ▶</span></span>
+      <span>Jump: <span class="key-badge">Space</span> or <span class="key-badge">▲</span></span>
+      <span>Water Meadow: <span class="key-badge">E</span></span>
+      <span>Pet Mochi: <span class="key-badge">Click Cat</span></span>
+    </div>
+
+    <!-- Milestone Toast Notification for Unlocks -->
+    <div id="milestone-toast">
+      <div class="toast-icon">🌻</div>
+      <div class="toast-content">
+        <div class="toast-title" id="toast-title">Sunflower Bloomed!</div>
+        <div class="toast-msg" id="toast-message">A special message for Anusha has unlocked!</div>
+      </div>
+    </div>
+
+    <!-- Touch Controls for Mobile / Tablets -->
+    <div id="touch-controls">
+      <div class="touch-cluster">
+        <button class="touch-btn" id="touch-left" aria-label="Move Left">◀</button>
+        <button class="touch-btn" id="touch-right" aria-label="Move Right">▶</button>
+      </div>
+      <div class="touch-cluster">
+        <button class="touch-btn pet-btn" id="touch-pet" aria-label="Pet Mochi">🐱</button>
+        <button class="touch-btn interact-btn" id="touch-water" aria-label="Water Meadow">🐘</button>
+        <button class="touch-btn jump-btn" id="touch-jump" aria-label="Jump">🐾</button>
+      </div>
+    </div>
+
+    <!-- Start / Welcome Modal -->
+    <div class="modal-overlay active" id="start-modal">
+      <div class="modal-card">
+        <div class="hero-badge-group">
+          <div class="hero-avatar">🐱</div>
+          <div class="hero-avatar sunflower">🌻</div>
+          <div class="hero-avatar">🐘</div>
+        </div>
+        <h1 class="modal-title">Anusha's Sunflower Meadow</h1>
+        <p class="modal-subtitle">A Magical Blue Twilight Adventure 💙</p>
+        <p class="modal-desc">
+          Welcome to the serene meadow under dreamy blue skies! Run with <strong>Mochi the Kitten</strong>, bounce on <strong>Ellie the Elephant's</strong> water bubbles, and catch falling golden seeds to make radiant sunflowers bloom for Anusha.
+        </p>
+
+        <div class="instructions-grid">
+          <div class="instruction-item">
+            <span class="instruction-icon">🐾</span>
+            <div><strong>Move & Jump</strong><br>Catch seeds & bounce high on bubbles</div>
+          </div>
+          <div class="instruction-item">
+            <span class="instruction-icon">🐘</span>
+            <div><strong>Ellie's Shower</strong><br>Water garden plots to grow giant sunflowers</div>
+          </div>
+          <div class="instruction-item">
+            <span class="instruction-icon">💌</span>
+            <div><strong>Unlock Messages</strong><br>Special notes dedicated to Anusha</div>
+          </div>
+          <div class="instruction-item">
+            <span class="instruction-icon">💖</span>
+            <div><strong>Pet Mochi</strong><br>Click or tap the cat to hear joyful purrs</div>
+          </div>
+        </div>
+
+        <button class="primary-btn" id="btn-start-game">
+          <span>Begin Adventure 🌻</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Garden Sanctuary & Messages Modal -->
+    <div class="modal-overlay" id="garden-modal">
+      <div class="modal-card">
+        <h2 class="modal-title">🌻 Anusha's Sanctuary 💙</h2>
+        <p class="modal-subtitle">Special Bloom Milestones</p>
+        
+        <div class="gallery-list" id="garden-gallery-list">
+          <!-- Dynamically populated via JS -->
+        </div>
+
+        <button class="primary-btn" id="btn-close-garden">
+          <span>Return to Meadow</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Victory Grand Meadow Bloom Modal -->
+    <div class="modal-overlay" id="victory-modal">
+      <div class="modal-card">
+        <div class="hero-badge-group">
+          <div class="hero-avatar sunflower">🌻</div>
+          <div class="hero-avatar">✨</div>
+          <div class="hero-avatar">🐘</div>
+        </div>
+        <h2 class="modal-title">The Meadow Has Bloomed! 🌻💙</h2>
+        <p class="modal-subtitle">Dedicated with Love to Anusha</p>
+        <p class="modal-desc">
+          All 5 celestial sunflowers are glowing in radiant golden splendor under the midnight blue sky! Mochi is purring happily and Ellie is trumpeting with joy!
+        </p>
+
+        <button class="primary-btn" id="btn-celebrate">
+          <span>Continue Playing & Celebrating 🎉</span>
+        </button>
+        <br>
+        <button class="secondary-btn" id="btn-view-messages">
+          <span>Read All Messages 💌</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Help / Instructions Modal -->
+    <div class="modal-overlay" id="help-modal">
+      <div class="modal-card">
+        <h2 class="modal-title">How to Play</h2>
+        <p class="modal-subtitle">Cozy & Relaxing Controls</p>
+
+        <div class="instructions-grid">
+          <div class="instruction-item">
+            <span class="instruction-icon">⌨️</span>
+            <div><strong>A / D or ◀ ▶</strong><br>Run left and right</div>
+          </div>
+          <div class="instruction-item">
+            <span class="instruction-icon">🚀</span>
+            <div><strong>Space or ▲</strong><br>Jump / Double jump on bubbles</div>
+          </div>
+          <div class="instruction-item">
+            <span class="instruction-icon">🐘</span>
+            <div><strong>E Key or Button</strong><br>Ellie sprays refreshing water</div>
+          </div>
+          <div class="instruction-item">
+            <span class="instruction-icon">🐱</span>
+            <div><strong>Click or Tap Mochi</strong><br>Stroke cat for purrs & hearts</div>
+          </div>
+        </div>
+
+        <button class="primary-btn" id="btn-close-help">
+          <span>Got It! 🐾</span>
+        </button>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Game Scripts -->
+  <script src="js/audio.js"></script>
+  <script src="js/particles.js"></script>
+  <script src="js/sprites.js"></script>
+  <script src="js/garden.js"></script>
+  <script src="js/game.js"></script>
+</body>
+</html>
